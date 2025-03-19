@@ -1,0 +1,10 @@
+flask-sqlalchemy==3.0.5
+psycopg2-binary==2.9.9
+redis==5.0.1
+celery==5.3.6
+requests==2.31.0
+transformers==4.35.2  # Hugging Face transformers for AI content generation
+torch==2.1.0          # Required for transformers
+google-analytics-data==0.17.1  # Google Analytics Data API
+python-dotenv==1.0.0  # For environment variables
+tweepy==4.14.0        # Twitter API
