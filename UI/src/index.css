@@ -1,0 +1,128 @@
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  :root {
+    --background: 0 0% 100%;
+    --foreground: 225 15% 16%;
+
+    --card: 0 0% 100%;
+    --card-foreground: 225 15% 16%;
+
+    --popover: 0 0% 100%;
+    --popover-foreground: 225 15% 16%;
+
+    --primary: 209 100% 60%;
+    --primary-foreground: 210 40% 98%;
+
+    --secondary: 210 40% 96.1%;
+    --secondary-foreground: 225 15% 16%;
+
+    --muted: 210 40% 96.1%;
+    --muted-foreground: 215 16% 47%;
+
+    --accent: 225 70% 60%;
+    --accent-foreground: 210 40% 98%;
+
+    --destructive: 0 84% 60%;
+    --destructive-foreground: 210 40% 98%;
+
+    --border: 214 32% 91%;
+    --input: 214 32% 91%;
+    --ring: 225 70% 60%;
+
+    --radius: 1rem;
+
+    --sidebar-background: 0 0% 100%;
+    --sidebar-foreground: 225 15% 16%;
+    --sidebar-primary: 209 100% 60%;
+    --sidebar-primary-foreground: 0 0% 100%;
+    --sidebar-accent: 225 15% 96%;
+    --sidebar-accent-foreground: 225 15% 16%;
+    --sidebar-border: 214 32% 91%;
+    --sidebar-ring: 209 100% 60%;
+  }
+
+  .dark {
+    --background: 225 15% 9%;
+    --foreground: 210 40% 98%;
+
+    --card: 225 15% 12%;
+    --card-foreground: 210 40% 98%;
+
+    --popover: 225 15% 12%;
+    --popover-foreground: 210 40% 98%;
+
+    --primary: 209 100% 60%;
+    --primary-foreground: 210 40% 98%;
+
+    --secondary: 225 15% 15%;
+    --secondary-foreground: 210 40% 98%;
+
+    --muted: 225 15% 15%;
+    --muted-foreground: 215 16% 65%;
+
+    --accent: 225 70% 60%;
+    --accent-foreground: 210 40% 98%;
+
+    --destructive: 0 84% 60%;
+    --destructive-foreground: 210 40% 98%;
+
+    --border: 215 27% 17%;
+    --input: 215 27% 17%;
+    --ring: 225 70% 60%;
+
+    --sidebar-background: 225 15% 12%;
+    --sidebar-foreground: 210 40% 98%;
+    --sidebar-primary: 209 100% 60%;
+    --sidebar-primary-foreground: 0 0% 100%;
+    --sidebar-accent: 225 15% 15%;
+    --sidebar-accent-foreground: 210 40% 98%;
+    --sidebar-border: 215 27% 17%;
+    --sidebar-ring: 209 100% 60%;
+  }
+}
+
+@layer base {
+  * {
+    @apply border-border;
+  }
+
+  body {
+    @apply bg-background text-foreground;
+    font-feature-settings: "rlig" 1, "calt" 1;
+  }
+
+  h1, h2, h3, h4 {
+    @apply tracking-tight;
+  }
+}
+
+/* Glass Effect */
+.glass {
+  @apply bg-white/70 dark:bg-black/30 backdrop-blur-lg border border-white/20 dark:border-white/10 shadow-lg;
+}
+
+/* Transitions for page elements */
+.page-transition-element {
+  @apply transition-all duration-300 ease-in-out;
+}
+
+/* Hide scrollbar but allow scrolling */
+.no-scrollbar {
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+}
+.no-scrollbar::-webkit-scrollbar {
+  display: none;
+}
+
+/* Subtle hover effect for cards */
+.hover-lift {
+  @apply transition-all duration-300 ease-out;
+}
+.hover-lift:hover {
+  @apply translate-y-[-4px] shadow-lg;
+}
