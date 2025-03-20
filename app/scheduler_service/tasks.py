@@ -1,5 +1,6 @@
 import tweepy
-from .. import celery, Config
+from .. import Config
+from ..celery_config import app_celery as celery
 from ..models import db, Post
 
 @celery.task

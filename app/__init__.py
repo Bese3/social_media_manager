@@ -1,12 +1,12 @@
 from flask import Flask
 from .config import Config
 from .models import db
-from celery import Celery
 
 def create_app():
     app = Flask(__name__)
     app.config.from_object(Config)
     
+    # Initialize extensions
     db.init_app(app)
     
     # Register blueprints
@@ -25,14 +25,4 @@ def create_app():
     
     return app
 
-def make_celery(app):
-    celery = Celery(
-        app.import_name,
-        backend=app.config["CELERY_RESULT_BACKEND"],
-        broker=app.config["CELERY_BROKER_URL"]
-    )
-    celery.conf.update(app.config)
-    return celery
-
 app = create_app()
-celery = make_celery(app)
