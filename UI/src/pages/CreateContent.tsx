@@ -1,5 +1,5 @@
 
-import React from 'react';
+import React, { useState } from 'react';
 import { MainLayout } from '@/layouts/MainLayout';
 import { ContentCreator } from '@/components/content/ContentCreator';
 import { DashboardCard } from '@/components/dashboard/DashboardCard';
@@ -9,13 +9,33 @@ import { useToast } from '@/hooks/use-toast';
 
 const CreateContent = () => {
   const { toast } = useToast();
+  const [input, setInput] = useState("");
+  const [content, setContent] = useState("");
   
   const handleGenerateIdeas = () => {
     toast({
       title: "AI is generating ideas",
       description: "This would connect to an AI service to generate content ideas.",
     });
+    fetch("http://localhost:5000/content/generate", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({
+        topic: "calssy Social Media Marketing topic to discuss",
+      }),
+    })
+    .then(response => response.json())
+    .then(data => {
+      console.log(data);
+      setContent(`${data.caption}\n\n\n${data.description}\n\n\n${data.hashtags[0]}`);
+    })
+    .catch(error => {
+      console.error("Error:", error);
+    });
   };
+  
   
   return (
     <MainLayout>
@@ -33,7 +53,7 @@ const CreateContent = () => {
         
         <div className="grid grid-cols-1 lg:grid-cols-4 gap-6">
           <div className="lg:col-span-3">
-            <ContentCreator />
+            <ContentCreator defaultInput={content} />
           </div>
           
           <div className="lg:col-span-1 space-y-6">

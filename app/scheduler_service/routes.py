@@ -11,6 +11,7 @@ def schedule_post():
     platform = data.get("platform")
     content = data.get("content")
     scheduled_time = datetime.strptime(data.get("scheduled_time"), "%Y-%m-%d %H:%M:%S")
+    print(scheduled_time)
     
     post = Post(platform=platform, content=content, scheduled_time=scheduled_time)
     db.session.add(post)
@@ -18,5 +19,6 @@ def schedule_post():
     
     # Schedule the task
     post_to_platform.apply_async(args=[post.id], eta=scheduled_time)
+    # post_to_platform(post.id)
     
     return jsonify({"message": "Post scheduled", "post_id": post.id})

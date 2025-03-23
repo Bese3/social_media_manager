@@ -9,3 +9,4 @@ numpy==1.26.4
 google-analytics-data==0.17.1
 python-dotenv==1.0.0
 tweepy==4.14.0
+flask-cors==4.0.0

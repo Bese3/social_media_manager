@@ -1,4 +1,3 @@
-
 import React, { useState } from 'react';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Card, CardContent } from '@/components/ui/card';
@@ -14,6 +13,7 @@ type Platform = 'twitter' | 'instagram' | 'facebook' | 'linkedin';
 
 interface ContentFormProps {
   platform: Platform;
+  input: string;
 }
 
 const platformConfig = {
@@ -43,15 +43,42 @@ const platformConfig = {
   }
 };
 
-const ContentForm = ({ platform }: ContentFormProps) => {
-  const [content, setContent] = useState('');
+const ContentForm = ({ platform, input }: ContentFormProps) => {
+  const [content, setContent] = useState("");
+  const [scheduledTime, setScheduledTime] = useState("now");
   const { toast } = useToast();
   const config = platformConfig[platform];
+  const [isPosting, setIsPosting] = useState(false);
   
   const handleGenerate = () => {
-    toast({
-      title: "AI is generating content",
-      description: "This would connect to an AI service to generate content.",
+    const currentDate = new Date();
+    const formattedDateTime = currentDate.toISOString().slice(0, 19).replace('T', ' ');
+
+    // toast({
+    //   title: "AI is generating content",
+    //   description: "This would connect to an AI service to generate content.",
+    // });
+    setIsPosting(true);
+    fetch("http://localhost:5000/scheduler/schedule", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({
+        content: content,
+        platform: platform,
+        scheduled_time: scheduledTime === "now" ? formattedDateTime : scheduledTime
+      }),
+    })
+    .then(response => response.json())
+    .then(data => {
+      console.log(data);
+    })
+    .catch(error => {
+      console.error("Error:", error);
+    })
+    .finally(() => {
+      setIsPosting(false);
     });
   };
   
@@ -71,7 +98,7 @@ const ContentForm = ({ platform }: ContentFormProps) => {
             <Textarea
               id={`${platform}-content`}
               placeholder={`Write your ${config.label} post here...`}
-              value={content}
+              value={content == "" ? input : content}
               onChange={(e) => setContent(e.target.value)}
               className="min-h-[150px] resize-none"
             />
@@ -81,7 +108,7 @@ const ContentForm = ({ platform }: ContentFormProps) => {
           </div>
         </div>
         
-        <div>
+        {/* <div>
           <Label htmlFor={`${platform}-media`}>Media</Label>
           <div className="mt-1 border-2 border-dashed rounded-lg p-6 text-center">
             <ImageIcon className="h-8 w-8 mx-auto text-muted-foreground" />
@@ -102,8 +129,8 @@ const ContentForm = ({ platform }: ContentFormProps) => {
               Upload Media
             </Button>
           </div>
-        </div>
-        
+        </div> */}
+{/*         
         <div>
           <Label htmlFor="hashtags">Hashtags</Label>
           <div className="flex gap-2">
@@ -116,23 +143,24 @@ const ContentForm = ({ platform }: ContentFormProps) => {
               Generate
             </Button>
           </div>
-        </div>
+        </div> */}
         
         <div className="flex justify-between items-center pt-4">
-          <Select>
+          <Select onValueChange={setScheduledTime}>
             <SelectTrigger className="w-[180px]">
               <SelectValue placeholder="Post now" />
             </SelectTrigger>
             <SelectContent>
               <SelectItem value="now">Post now</SelectItem>
-              <SelectItem value="schedule">Schedule for later</SelectItem>
-              <SelectItem value="draft">Save as draft</SelectItem>
+              <SelectItem value={new Date(Date.now() + 3600000).toISOString().slice(0, 19).replace('T', ' ')}>In 1 hour</SelectItem>
+              <SelectItem value={new Date(Date.now() + 86400000).toISOString().slice(0, 19).replace('T', ' ')}>Tomorrow</SelectItem>
+              <SelectItem value="custom">Custom time</SelectItem>
             </SelectContent>
           </Select>
           
-          <Button className="gap-2">
+          <Button className="gap-2" onClick={handleGenerate}>
             <Send className="h-4 w-4" />
-            Create Post
+            {isPosting ? "Posting..." : "Create Post"}
           </Button>
         </div>
       </div>
@@ -140,7 +168,7 @@ const ContentForm = ({ platform }: ContentFormProps) => {
   );
 };
 
-export function ContentCreator() {
+export function ContentCreator({ defaultInput = "" }: { defaultInput?: string }) {
   return (
     <Card className="w-full animate-scale-in">
       <CardContent className="p-6">
@@ -163,21 +191,20 @@ export function ContentCreator() {
               LinkedIn
             </TabsTrigger>
           </TabsList>
-          
           <TabsContent value="twitter">
-            <ContentForm platform="twitter" />
+            <ContentForm platform="twitter" input={defaultInput} />
           </TabsContent>
           
           <TabsContent value="instagram">
-            <ContentForm platform="instagram" />
+            <ContentForm platform="instagram" input={defaultInput} />
           </TabsContent>
           
           <TabsContent value="facebook">
-            <ContentForm platform="facebook" />
+            <ContentForm platform="facebook" input={defaultInput} />
           </TabsContent>
           
           <TabsContent value="linkedin">
-            <ContentForm platform="linkedin" />
+            <ContentForm platform="linkedin" input={defaultInput} />
           </TabsContent>
         </Tabs>
       </CardContent>

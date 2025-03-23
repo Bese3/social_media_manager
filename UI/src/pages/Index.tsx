@@ -1,5 +1,6 @@
 
-import React from 'react';
+import React, { useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 import { MainLayout } from '@/layouts/MainLayout';
 import { DashboardCard } from '@/components/dashboard/DashboardCard';
 import { MetricsCard } from '@/components/dashboard/MetricsCard';
@@ -7,8 +8,8 @@ import { BarChart3, MessageCircle, Users, Clock, Calendar, BarChart2, Zap, PenTo
 import { Button } from '@/components/ui/button';
 import { AnalyticsChart } from '@/components/analytics/AnalyticsChart';
 
-// Mock data for the chart
-const engagementData = [
+// Mock data for different time periods
+const weekData = [
   { name: 'Mon', twitter: 420, instagram: 340, facebook: 240, linkedin: 180 },
   { name: 'Tue', twitter: 380, instagram: 390, facebook: 220, linkedin: 200 },
   { name: 'Wed', twitter: 450, instagram: 480, facebook: 280, linkedin: 230 },
@@ -18,7 +19,67 @@ const engagementData = [
   { name: 'Sun', twitter: 610, instagram: 590, facebook: 420, linkedin: 310 },
 ];
 
+const monthData = Array.from({ length: 30 }, (_, i) => ({
+  name: `Day ${i + 1}`,
+  twitter: Math.floor(Math.random() * 500) + 300,
+  instagram: Math.floor(Math.random() * 600) + 250,
+  facebook: Math.floor(Math.random() * 400) + 200,
+  linkedin: Math.floor(Math.random() * 300) + 150,
+}));
+
+const yearData = Array.from({ length: 12 }, (_, i) => {
+  const months = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
+  return {
+    name: months[i],
+    twitter: Math.floor(Math.random() * 8000) + 4000,
+    instagram: Math.floor(Math.random() * 10000) + 5000,
+    facebook: Math.floor(Math.random() * 6000) + 3000,
+    linkedin: Math.floor(Math.random() * 4000) + 2000,
+  };
+});
+
+// Helper function to get data based on time range
+const getDataByTimeRange = (range: string) => {
+  switch (range) {
+    case '7d':
+      return weekData;
+    case '30d':
+      return monthData;
+    case '90d':
+      return monthData.slice(0, 90);
+    case '1y':
+      return yearData;
+    default:
+      return weekData;
+  }
+};
+
 const Index = () => {
+  const navigate = useNavigate();
+  const [timeRange, setTimeRange] = useState('7d');
+  
+  // Get engagement data based on selected time range
+  const engagementData = getDataByTimeRange(timeRange);
+  
+  // Navigation handlers
+  const handleCreateClick = () => {
+    navigate('/create');
+  };
+  
+  const handleScheduleClick = () => {
+    navigate('/schedule');
+  };
+  
+  const handleAnalyticsClick = () => {
+    navigate('/analytics');
+  };
+  
+  const handleResponsesClick = () => {
+    // This functionality could be added in the future
+    // For now, we'll just navigate to a relevant page
+    navigate('/create');
+  };
+
   return (
     <MainLayout>
       <div className="flex flex-col gap-6">
@@ -32,7 +93,7 @@ const Index = () => {
               <Calendar className="h-4 w-4 mr-2" />
               June 15, 2023
             </Button>
-            <Button>
+            <Button onClick={handleCreateClick}>
               <PenTool className="h-4 w-4 mr-2" />
               Create Content
             </Button>
@@ -79,6 +140,8 @@ const Index = () => {
               description="Engagement metrics across platforms" 
               data={engagementData} 
               type="line"
+              timeRange={timeRange}
+              onTimeRangeChange={setTimeRange}
             />
           </div>
           
@@ -88,7 +151,10 @@ const Index = () => {
             icon={<Zap className="h-5 w-5" />}
           >
             <div className="space-y-3">
-              <div className="bg-secondary/80 rounded-md p-4 flex items-center gap-4 hover:bg-secondary transition-all">
+              <div 
+                className="bg-secondary/80 rounded-md p-4 flex items-center gap-4 hover:bg-secondary transition-all cursor-pointer"
+                onClick={handleCreateClick}
+              >
                 <div className="bg-primary/20 text-primary p-2 rounded-full">
                   <PenTool className="h-5 w-5" />
                 </div>
@@ -98,7 +164,10 @@ const Index = () => {
                 </div>
               </div>
               
-              <div className="bg-secondary/80 rounded-md p-4 flex items-center gap-4 hover:bg-secondary transition-all">
+              <div 
+                className="bg-secondary/80 rounded-md p-4 flex items-center gap-4 hover:bg-secondary transition-all cursor-pointer"
+                onClick={handleScheduleClick}
+              >
                 <div className="bg-primary/20 text-primary p-2 rounded-full">
                   <Calendar className="h-5 w-5" />
                 </div>
@@ -108,7 +177,10 @@ const Index = () => {
                 </div>
               </div>
               
-              <div className="bg-secondary/80 rounded-md p-4 flex items-center gap-4 hover:bg-secondary transition-all">
+              <div 
+                className="bg-secondary/80 rounded-md p-4 flex items-center gap-4 hover:bg-secondary transition-all cursor-pointer"
+                onClick={handleAnalyticsClick}
+              >
                 <div className="bg-primary/20 text-primary p-2 rounded-full">
                   <BarChart2 className="h-5 w-5" />
                 </div>
@@ -118,7 +190,10 @@ const Index = () => {
                 </div>
               </div>
               
-              <div className="bg-secondary/80 rounded-md p-4 flex items-center gap-4 hover:bg-secondary transition-all">
+              <div 
+                className="bg-secondary/80 rounded-md p-4 flex items-center gap-4 hover:bg-secondary transition-all cursor-pointer"
+                onClick={handleResponsesClick}
+              >
                 <div className="bg-primary/20 text-primary p-2 rounded-full">
                   <MessageCircle className="h-5 w-5" />
                 </div>
